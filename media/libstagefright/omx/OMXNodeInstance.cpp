@@ -357,8 +357,6 @@ status_t OMXNodeInstance::freeNode(OMXMaster *master) {
             break;
     }
 
-    Mutex::Autolock _l(mLock);
-
     ALOGV("[%x:%s] calling destroyComponentInstance", mNodeID, mName);
     OMX_ERRORTYPE err = master->destroyComponentInstance(
             static_cast<OMX_COMPONENTTYPE *>(mHandle));
@@ -812,7 +810,8 @@ status_t OMXNodeInstance::useBuffer(
         return BAD_VALUE;
     }
 
-    if (mMetadataType[portIndex] == kMetadataBufferTypeInvalid && mGraphicBufferEnabled[portIndex]) {
+    if (mMetadataType[portIndex] == kMetadataBufferTypeInvalid
+            && mGraphicBufferEnabled[portIndex]) {
         ALOGE("b/62948670");
         android_errorWriteLog(0x534e4554, "62948670");
         return INVALID_OPERATION;
@@ -940,29 +939,6 @@ status_t OMXNodeInstance::useGraphicBuffer(
         return BAD_VALUE;
     }
     Mutex::Autolock autoLock(mLock);
-    if (!mGraphicBufferEnabled[portIndex]
-            || mMetadataType[portIndex] != kMetadataBufferTypeInvalid) {
-        // Report error if this is not in graphic buffer mode.
-        ALOGE("b/62948670");
-        android_errorWriteLog(0x534e4554, "62948670");
-        return INVALID_OPERATION;
-    }
-
-    if (!mGraphicBufferEnabled[portIndex]
-            || mMetadataType[portIndex] != kMetadataBufferTypeInvalid) {
-        // Report error if this is not in graphic buffer mode.
-        ALOGE("b/62948670");
-        android_errorWriteLog(0x534e4554, "62948670");
-        return INVALID_OPERATION;
-    }
-
-    if (!mGraphicBufferEnabled[portIndex]
-            || mMetadataType[portIndex] != kMetadataBufferTypeInvalid) {
-        // Report error if this is not in graphic buffer mode.
-        ALOGE("b/62948670");
-        android_errorWriteLog(0x534e4554, "62948670");
-        return INVALID_OPERATION;
-    }
 
     if (!mGraphicBufferEnabled[portIndex]
             || mMetadataType[portIndex] != kMetadataBufferTypeInvalid) {
@@ -1290,12 +1266,6 @@ status_t OMXNodeInstance::allocateSecureBuffer(
         return BAD_VALUE;
     }
 
-    if (mSecureBufferType[portIndex] == kSecureBufferTypeUnknown) {
-        ALOGE("b/63522818");
-        android_errorWriteLog(0x534e4554, "63522818");
-        return ERROR_UNSUPPORTED;
-    }
-
     BufferMeta *buffer_meta = new BufferMeta(size, portIndex);
 
     OMX_BUFFERHEADERTYPE *header;
@@ -1355,12 +1325,6 @@ status_t OMXNodeInstance::allocateBufferWithBackup(
         ALOGE("b/35467458");
         android_errorWriteLog(0x534e4554, "35467458");
         return BAD_VALUE;
-    }
-
-    if (mSecureBufferType[portIndex] != kSecureBufferTypeUnknown) {
-        ALOGE("b/63522818");
-        android_errorWriteLog(0x534e4554, "63522818");
-        return ERROR_UNSUPPORTED;
     }
 
     // metadata buffers are not connected cross process; only copy if not meta
