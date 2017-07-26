@@ -964,6 +964,14 @@ status_t OMXNodeInstance::useGraphicBuffer(
         return INVALID_OPERATION;
     }
 
+    if (!mGraphicBufferEnabled[portIndex]
+            || mMetadataType[portIndex] != kMetadataBufferTypeInvalid) {
+        // Report error if this is not in graphic buffer mode.
+        ALOGE("b/62948670");
+        android_errorWriteLog(0x534e4554, "62948670");
+        return INVALID_OPERATION;
+    }
+
     // See if the newer version of the extension is present.
     OMX_INDEXTYPE index;
     if (OMX_GetExtensionIndex(
