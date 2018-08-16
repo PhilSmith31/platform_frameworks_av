@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright (C) 2010-2010 NXP Software
  * Copyright (C) 2009 The Android Open Source Project
  *
